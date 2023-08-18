@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+  <title>Stencil Component Starter</title>
+
+  <!-- Load the ArcGIS JS API styles (the JS is loaded via ESM module imports in the script tag:) -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+
+  <script type="module" src="build/stencil-esri-js-api-example.esm.js"></script>
+  <script nomodule src="build/stencil-esri-js-api-example.js"></script>
+
+  <style>
+    /* We should move this to a separate CSS file, but I can't figure out how to get Stencil to include that in the dev build. */
+    html,
+    body {
+      height: 100vh;
+      width: 100vw;
+      margin: 0px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      display: grid;
+      /* enables CSS grid */
+      grid-template-columns: 340px auto 1fr;
+      grid-template-rows: 100px calc(100vh - 100px);
+    }
+
+    header {
+      grid-column: 1 / span 3;
+      font-size: 40px;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    aside {
+      grid-column: 1;
+      padding: 10px;
+    }
+
+    .gutter {
+      grid-column: 2;
+      background-image: url('data:image/svg+xml,%3Csvg%20version=%221.1%22%20id=%22Layer_1%22%20xmlns=%22http://www.w3.org/2000/svg%22%20xmlns:xlink=%22http://www.w3.org/1999/xlink%22%20x=%220px%22%20y=%220px%22%20viewBox=%220%200%206%2020%22%20style=%22enable-background:new%200%200%206%2020;%22%20xml:space=%22preserve%22%3E%3Cstyle%20type=%22text/css%22%3E.st0%7Bfill:%23D4D4D4;%7D%3C/style%3E%3Cg%3E%3Crect%20x=%220.5%22%20y=%220.5%22%20class=%22st0%22%20width=%221%22%20height=%2219%22/%3E%3Cpath%20d=%22M1,1v18V1%20M2,0H0v20h2V0L2,0z%22/%3E%3C/g%3E%3Cg%3E%3Crect%20x=%224.5%22%20y=%220.5%22%20class=%22st0%22%20width=%221%22%20height=%2219%22/%3E%3Cpath%20d=%22M5,1v18V1%20M6,0H4v20h2V0L6,0z%22/%3E%3C/g%3E%3C/svg%3E');
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 7px;
+      margin-right: 2px;
+      cursor: col-resize;
+    }
+
+    main {
+      grid-column: 3;
+    }
+
+    /* Tell the map control to take 100% of its container: */
+    #viewDiv {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script type="module">
+    import Map from "https://js.arcgis.com/4.27/@arcgis/core/Map.js";
+    import MapView from "https://js.arcgis.com/4.27/@arcgis/core/views/MapView.js";
+    import { when } from "https://js.arcgis.com/4.27/@arcgis/core/core/reactiveUtils.js";
+    import Split from "https://esm.sh/split-grid@1.0.11";
+
+    Split({
+      columnGutters: [
+        {
+          track: 1,
+          element: document.querySelector(".gutter")
+        }
+      ]
+    });
+    const component = document.querySelector('esri-sample');
+
+    const map = new Map({
+      basemap: "streets-vector" // Basemap layer service
+    });
+
+    const view = new MapView({
+      map: map,
+      center: [-92.264214, 34.734559], // Longitude, latitude
+      zoom: 10, // Zoom level
+      container: "viewDiv" // Div element
+    });
+    component.view = view;
+
+    when(
+      () => view.stationary,
+      () => console.log('CENTER CHANGED', view.center)
+    );
+  </script>
+
+</head>
+
+<body>
+  <header><P></P>
+    Esri Web Component Demo
+  </header>
+  <aside id="sidebar">
+    <esri-sample></esri-sample>
+  </aside>
+  <div class="gutter"></div>
+  <main>
+    <div id="viewDiv"></div>
+  </main>
+
+</body>
+
+</html>
